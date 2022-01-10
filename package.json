@@ -1,0 +1,27 @@
+{
+  "bin": {
+    "nity": "bin/index.js"
+  },
+  "dependencies": {
+    "inquirer": "^8.2.0"
+  },
+  "name": "nity-delivery",
+  "description": "Aplicación para la entrega de productos NityShop",
+  "version": "1.0.0",
+  "main": "index.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KFuee/NityDelivery.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/KFuee/NityDelivery/issues"
+  },
+  "homepage": "https://github.com/KFuee/NityDelivery#readme"
+}
