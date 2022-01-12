@@ -1,2 +1,2 @@
 #! /usr/bin/env node
-require("../lib/options").ejecutar();
+require("../lib/options/list").ejecutar();

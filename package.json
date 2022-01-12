@@ -3,13 +3,17 @@
     "nity": "bin/index.js"
   },
   "dependencies": {
-    "inquirer": "^8.2.0"
+    "@hendt/ebay-api": "^5.2.1",
+    "cli-spinner": "^0.2.10",
+    "dotenv": "^11.0.0",
+    "express": "^4.17.2",
+    "inquirer": "^8.2.0",
+    "openurl": "^1.1.1"
   },
   "name": "nity-delivery",
   "description": "Aplicación para la entrega de productos NityShop",
   "version": "1.0.0",
   "main": "index.js",
-  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

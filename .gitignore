@@ -1,3 +1,7 @@
+# General
+tokens
+certs
+
 # Logs
 logs
 *.log
