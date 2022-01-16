@@ -11,6 +11,16 @@ export default class Ebay {
   constructor(usuario?: string) {
     this.usuario = usuario;
 
+    // Comprueba si las variables de entorno están definidas
+    if (
+      !config.EBAY_APP_ID ||
+      !config.EBAY_CERT_ID ||
+      !config.EBAY_DEV_ID ||
+      !config.EBAY_RU_NAME
+    ) {
+      throw new Error("Las variables de entorno no están definidas");
+    }
+
     // Crea una nueva instancia de eBayApi
     this.instancia = new eBayApi({
       appId: config.EBAY_APP_ID ? config.EBAY_APP_ID : "",

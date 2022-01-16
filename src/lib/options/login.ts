@@ -1,5 +1,7 @@
 import inquirer from "inquirer";
 
+import handleError from "../utils/handleError";
+
 // Funciones de opciones
 import list from "./list";
 
@@ -19,20 +21,24 @@ const ejecutar = async () => {
     },
   ]);
 
-  // Genera una nueva instancia de eBay
-  const eBay = new Ebay(usuario);
+  try {
+    // Genera una nueva instancia de eBay
+    const eBay = new Ebay(usuario);
 
-  // Crea una nueva instancia de Oauth
-  const oAuth = new Oauth(eBay);
+    // Crea una nueva instancia de Oauth
+    const oAuth = new Oauth(eBay);
 
-  const code = await oAuth.obtenerAuthCode();
-  const token = await eBay.getInstancia().OAuth2.getToken(code);
+    const code = await oAuth.obtenerAuthCode();
+    const token = await eBay.getInstancia().OAuth2.getToken(code);
 
-  // Finaliza el proceso de inicio de sesión
-  oAuth.finalizar(token);
+    // Finaliza el proceso de inicio de sesión
+    oAuth.finalizar(token);
 
-  // Vuelve a mostrar la lista de opciones
-  list.ejecutar();
+    // Vuelve a mostrar la lista de opciones
+    list.ejecutar();
+  } catch (error) {
+    handleError(error);
+  }
 };
 
 export default { ejecutar };
