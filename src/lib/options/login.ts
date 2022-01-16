@@ -13,11 +13,17 @@ const ejecutar = async () => {
   console.clear();
 
   // Pregunta al usuario por el nombre de usuario
-  const { usuario } = await inquirer.prompt([
+  const { usuario, contrasena } = await inquirer.prompt([
     {
       type: "input",
       name: "usuario",
       message: "Introduce el nombre de usuario de eBay",
+    },
+    {
+      type: "password",
+      mask: "*",
+      name: "contrasena",
+      message: "Introduce la contraseña de eBay",
     },
   ]);
 
@@ -28,7 +34,7 @@ const ejecutar = async () => {
     // Crea una nueva instancia de Oauth
     const oAuth = new Oauth(eBay);
 
-    const code = await oAuth.obtenerAuthCode();
+    const code = await oAuth.obtenerAuthCode(usuario, contrasena);
     const token = await eBay.getInstancia().OAuth2.getToken(code);
 
     // Finaliza el proceso de inicio de sesión

@@ -9,6 +9,7 @@
     "express": "^4.17.2",
     "inquirer": "^8.2.0",
     "openurl": "^1.1.1",
+    "puppeteer": "^13.0.1",
     "ts-loader": "^9.2.6"
   },
   "name": "tego-delivery",
