@@ -1,9 +1,10 @@
 import fs from "fs";
 import https from "https";
 import express from "express";
-import Ebay from "./Ebay";
+import { Spinner } from "cli-spinner";
 import { Token } from "@hendt/ebay-api/lib/auth/oAuth2";
-const Spinner = require("cli-spinner").Spinner;
+
+import Ebay from "./Ebay";
 
 export default class Oauth {
   private eBay: Ebay;

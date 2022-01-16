@@ -1,7 +1,10 @@
 import inquirer from "inquirer";
-import Oauth from "../structures/Oauth";
-import Ebay from "../structures/Ebay";
+
+// Funciones de opciones
 import list from "./list";
+
+import Ebay from "../structures/Ebay";
+import Oauth from "../structures/Oauth";
 
 const ejecutar = async () => {
   // Limpia los mensajes de la consola

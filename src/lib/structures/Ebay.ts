@@ -1,13 +1,14 @@
 import fs = require("fs");
 import eBayApi from "@hendt/ebay-api";
+
 import config from "../config";
 import login from "../options/login";
 
 export default class Ebay {
-  private usuario: string;
+  private usuario?: string;
   private instancia: eBayApi;
 
-  constructor(usuario: string) {
+  constructor(usuario?: string) {
     this.usuario = usuario;
 
     // Crea una nueva instancia de eBayApi
