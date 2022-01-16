@@ -1,4 +1,7 @@
-const inquirer = require("inquirer");
+import inquirer from "inquirer";
+import Oauth from "../structures/Oauth";
+import Ebay from "../structures/Ebay";
+import list from "./list";
 
 const ejecutar = async () => {
   // Limpia los mensajes de la consola
@@ -14,10 +17,10 @@ const ejecutar = async () => {
   ]);
 
   // Genera una nueva instancia de eBay
-  const eBay = new (require("../structures/EBay"))(usuario);
+  const eBay = new Ebay(usuario);
 
   // Crea una nueva instancia de Oauth
-  const oAuth = new (require("../structures/Oauth"))(eBay);
+  const oAuth = new Oauth(eBay);
 
   const code = await oAuth.obtenerAuthCode();
   const token = await eBay.getInstancia().OAuth2.getToken(code);
@@ -26,9 +29,7 @@ const ejecutar = async () => {
   oAuth.finalizar(token);
 
   // Vuelve a mostrar la lista de opciones
-  require(__dirname + "/list.js").ejecutar();
+  list.ejecutar();
 };
 
-module.exports = {
-  ejecutar,
-};
+export default { ejecutar };

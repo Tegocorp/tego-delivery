@@ -1,27 +1,33 @@
-const fs = require("fs");
-const https = require("https");
-const express = require("express");
+import fs from "fs";
+import https from "https";
+import express from "express";
+import Ebay from "./Ebay";
+import { Token } from "@hendt/ebay-api/lib/auth/oAuth2";
 const Spinner = require("cli-spinner").Spinner;
 
-class Oauth {
-  constructor(eBay) {
+export default class Oauth {
+  private eBay: Ebay;
+  private spinner: any;
+
+  constructor(eBay: Ebay) {
     this.eBay = eBay;
 
     this.spinner = new Spinner("%s Inicia sesión en eBay para continuar...");
     this.spinner.setSpinnerString("⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏");
   }
 
-  async obtenerAuthCode() {
+  async obtenerAuthCode(): Promise<string> {
     // Certificado y clave privada para entorno de desarrollo
-    const key = fs.readFileSync(__dirname + "/../../certs/key.pem");
-    const cert = fs.readFileSync(__dirname + "/../../certs/cert.pem");
+    const key = fs.readFileSync(__dirname + "/../../../certs/key.pem");
+    const cert = fs.readFileSync(__dirname + "/../../../certs/cert.pem");
 
     const app = express();
 
     const server = https.createServer({ key: key, cert: cert }, app);
 
-    let resolve;
-    const p = new Promise((_resolve) => {
+    let resolve: any;
+
+    const p = new Promise<string>((_resolve) => {
       resolve = _resolve;
     });
 
@@ -33,7 +39,7 @@ class Oauth {
       );
     });
 
-    await server.listen(3000);
+    server.listen(3000);
 
     // Genera la URL de inicio de sesión
     const url = this.eBay.getInstancia().OAuth2.generateAuthUrl();
@@ -46,12 +52,12 @@ class Oauth {
 
     const code = await p;
 
-    await server.close();
+    server.close();
 
     return code;
   }
 
-  finalizar(token) {
+  finalizar(token: Token) {
     // Guarda el token en un fichero
     this.eBay.guardarToken(token);
 
@@ -59,5 +65,3 @@ class Oauth {
     this.spinner.stop();
   }
 }
-
-module.exports = Oauth;
