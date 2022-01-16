@@ -1,3 +1,6 @@
+.DS_Store
+package-lock.json
+
 # General
 token.json
 certs
