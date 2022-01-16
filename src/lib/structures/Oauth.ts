@@ -29,11 +29,7 @@ export default class Oauth {
     contrasena: string
   ) {
     // {ignoreHTTPSErrors: true} es necesario para que no muestre un error
-    const navegador = await puppeteer.launch({
-      headless: false,
-      ignoreHTTPSErrors: true,
-      args: ["--ignore-certificate-errors"],
-    });
+    const navegador = await puppeteer.launch({ headless: false });
 
     const pagina = await navegador.newPage();
 
@@ -83,34 +79,28 @@ export default class Oauth {
     if (consentimiento) {
       // Hace click sobre el botón de enviar
       await pagina.click("input[type='submit']");
+      await pagina.waitForNavigation();
     }
 
+    const redirectUrl = new URL(await pagina.url());
+
+    console.log(redirectUrl.searchParams.get("code"));
+
     await navegador.close();
+
+    // Obtener query param "code" de la URL
+    return redirectUrl.searchParams.get("code");
   }
 
   public async obtenerAuthCode(
     usuario: string,
     contrasena: string
   ): Promise<string> {
-    // Certificado y clave privada para entorno de desarrollo
-    const key = fs.readFileSync(__dirname + "/../../../certs/key.pem");
-    const cert = fs.readFileSync(__dirname + "/../../../certs/cert.pem");
-
-    const app = express();
-
-    const server = https.createServer({ key: key, cert: cert }, app);
-
     let resolve: any;
 
     const p = new Promise<string>((_resolve) => {
       resolve = _resolve;
     });
-
-    app.get("/oauth", (req, res) => {
-      resolve(req.query.code);
-    });
-
-    server.listen(3000);
 
     try {
       // Inicia el spinner de inicio de sesión
@@ -119,10 +109,10 @@ export default class Oauth {
       // Genera la URL de inicio de sesión
       const url = this.eBay.getInstancia().OAuth2.generateAuthUrl();
 
-      await this.iniciarSesion(url, usuario, contrasena);
+      const code = await this.iniciarSesion(url, usuario, contrasena);
+      resolve(code);
     } catch (error) {
       this.spinner.stop();
-      server.close();
 
       handleError(error);
 
@@ -135,8 +125,6 @@ export default class Oauth {
     }
 
     const code = await p;
-
-    server.close();
 
     return code;
   }
