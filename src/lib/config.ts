@@ -1,6 +1,7 @@
-require("dotenv").config();
+import dotenv from "dotenv";
+dotenv.config();
 
-module.exports = {
+export default {
   EBAY_APP_ID: process.env.EBAY_APP_ID,
   EBAY_CERT_ID: process.env.EBAY_CERT_ID,
   EBAY_DEV_ID: process.env.EBAY_DEV_ID,

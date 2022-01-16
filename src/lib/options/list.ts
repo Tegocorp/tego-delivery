@@ -1,7 +1,7 @@
-const inquirer = require("inquirer");
+import inquirer from "inquirer";
 
 // Funciones de opciones
-const login = require("./login");
+import login from "./login";
 
 const ejecutar = async () => {
   // Limpia los mensajes de la consola
@@ -38,6 +38,4 @@ const ejecutar = async () => {
   }
 };
 
-module.exports = {
-  ejecutar,
-};
+export default { ejecutar };
