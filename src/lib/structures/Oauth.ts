@@ -1,17 +1,12 @@
-import fs from "fs";
-import https from "https";
-import express from "express";
 import puppeteer from "puppeteer";
 import { Spinner } from "cli-spinner";
 import { Token } from "@hendt/ebay-api/lib/auth/oAuth2";
 
 import Ebay from "./Ebay";
-import login from "../options/login";
-import handleError from "../utils/handleError";
 
 export default class Oauth {
   private eBay: Ebay;
-  private spinner: any;
+  private spinner: Spinner;
 
   constructor(eBay: Ebay) {
     this.eBay = eBay;
@@ -27,7 +22,7 @@ export default class Oauth {
     url: string,
     usuario: string,
     contrasena: string
-  ) {
+  ): Promise<string> {
     // {ignoreHTTPSErrors: true} es necesario para que no muestre un error
     const navegador = await puppeteer.launch({ headless: false });
 
@@ -82,52 +77,21 @@ export default class Oauth {
       await pagina.waitForNavigation();
     }
 
-    // Obtener query param "code" de la URL
-    const redirectUrl = new URL(await pagina.url());
-
-    console.log(redirectUrl.searchParams.get("code"));
-
+    const code = await pagina.evaluate(() => {
+      const url = new URL(window.location.href);
+      return url.searchParams.get("code");
+    });
     await navegador.close();
 
-    // Obtener query param "code" de la URL
-    return redirectUrl.searchParams.get("code");
+    return code ? code : "";
   }
 
-  public async obtenerAuthCode(
-    usuario: string,
-    contrasena: string
-  ): Promise<string> {
-    let resolve: any;
-
-    const p = new Promise<string>((_resolve) => {
-      resolve = _resolve;
-    });
-
-    try {
-      // Inicia el spinner de inicio de sesión
-      this.spinner.start();
-
-      // Genera la URL de inicio de sesión
-      const url = this.eBay.getInstancia().OAuth2.generateAuthUrl();
-
-      const code = await this.iniciarSesion(url, usuario, contrasena);
-      resolve(code);
-    } catch (error) {
-      this.spinner.stop();
-
-      handleError(error);
-
-      await new Promise((resolve) => {
-        setTimeout(() => {
-          login.ejecutar();
-          resolve(true);
-        }, 5000);
-      });
-    }
-
-    const code = await p;
-
-    return code;
+  public obtenerAuthCode(usuario: string, contrasena: string): Promise<string> {
+    // Inicia el spinner de inicio de sesión
+    this.spinner.start();
+    // Genera la URL de inicio de sesión
+    const url = this.eBay.getInstancia().OAuth2.generateAuthUrl();
+    return this.iniciarSesion(url, usuario, contrasena);
   }
 
   finalizar(token: Token) {

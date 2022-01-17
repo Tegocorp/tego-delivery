@@ -43,7 +43,14 @@ const ejecutar = async () => {
     // Vuelve a mostrar la lista de opciones
     list.ejecutar();
   } catch (error) {
+    console.clear();
     handleError(error);
+
+    await new Promise((resolve) => {
+      setTimeout(() => {
+        ejecutar();
+      }, 5000);
+    });
   }
 };
 
