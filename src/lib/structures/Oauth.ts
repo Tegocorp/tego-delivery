@@ -24,7 +24,7 @@ export default class Oauth {
     contrasena: string
   ): Promise<string> {
     // {ignoreHTTPSErrors: true} es necesario para que no muestre un error
-    const navegador = await puppeteer.launch({ headless: false });
+    const navegador = await puppeteer.launch();
 
     const pagina = await navegador.newPage();
 
