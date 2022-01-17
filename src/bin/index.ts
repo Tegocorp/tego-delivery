@@ -1,4 +1,11 @@
 #! /usr/bin/env node
-import list from "../lib/options/list";
+import Ebay from "../lib/structures/Ebay";
 
-list.ejecutar();
+import list from "../lib/options/list";
+import login from "../lib/options/login";
+
+if (Ebay.existeToken()) {
+  list.ejecutar();
+} else {
+  login.ejecutar();
+}

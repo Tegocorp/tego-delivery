@@ -46,12 +46,12 @@ export default class Ebay {
   }
 
   // Comprueba si existe el fichero token
-  public existeToken() {
+  public static existeToken() {
     return fs.existsSync(__dirname + "/../../token.json");
   }
 
   public establecerCredenciales() {
-    if (!this.existeToken()) {
+    if (!Ebay.existeToken()) {
       // Si no existe, se ejecuta el proceso de inicio de sesión
       login.ejecutar();
 
