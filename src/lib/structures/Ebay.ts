@@ -53,7 +53,7 @@ export default class Ebay {
   public establecerCredenciales() {
     if (!Ebay.existeToken()) {
       // Si no existe, se ejecuta el proceso de inicio de sesión
-      login.ejecutar();
+      login();
 
       return;
     }

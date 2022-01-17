@@ -3,7 +3,7 @@ import inquirer from "inquirer";
 // Funciones de opciones
 import login from "./login";
 
-const ejecutar = async () => {
+export default async function ejecutar() {
   // Limpia los mensajes de la consola
   console.clear();
 
@@ -26,7 +26,7 @@ const ejecutar = async () => {
   // Ejecuta la opción seleccionada
   switch (opcion) {
     case "Inicio de sesión":
-      login.ejecutar();
+      login();
       break;
     case "Salir de la aplicación":
       console.clear();
@@ -36,6 +36,4 @@ const ejecutar = async () => {
       console.log("Ha ocurrido un error obteniendo la opción");
       break;
   }
-};
-
-export default { ejecutar };
+}

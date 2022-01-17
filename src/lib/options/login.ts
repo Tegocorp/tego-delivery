@@ -8,7 +8,7 @@ import list from "./list";
 import Ebay from "../structures/Ebay";
 import Oauth from "../structures/Oauth";
 
-const ejecutar = async () => {
+export default async function ejecutar() {
   // Limpia los mensajes de la consola
   console.clear();
 
@@ -40,7 +40,7 @@ const ejecutar = async () => {
     oAuth.finalizar(token);
 
     // Vuelve a mostrar la lista de opciones
-    list.ejecutar();
+    list();
   } catch (error) {
     handleError(error);
     oAuth.spinner.stop();
@@ -48,9 +48,8 @@ const ejecutar = async () => {
     await new Promise((resolve) => {
       setTimeout(() => {
         ejecutar();
+        resolve(true);
       }, 5000);
     });
   }
-};
-
-export default { ejecutar };
+}

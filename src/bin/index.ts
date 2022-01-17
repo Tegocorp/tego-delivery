@@ -5,7 +5,7 @@ import list from "../lib/options/list";
 import login from "../lib/options/login";
 
 if (Ebay.existeToken()) {
-  list.ejecutar();
+  list();
 } else {
-  login.ejecutar();
+  login();
 }
