@@ -1,6 +1,4 @@
-import fs from "fs";
-import https from "https";
-import express from "express";
+import puppeteer from "puppeteer";
 import { Spinner } from "cli-spinner";
 import { Token } from "@hendt/ebay-api/lib/auth/oAuth2";
 
@@ -8,54 +6,92 @@ import Ebay from "./Ebay";
 
 export default class Oauth {
   private eBay: Ebay;
-  private spinner: any;
+  public spinner: Spinner;
 
   constructor(eBay: Ebay) {
     this.eBay = eBay;
 
-    this.spinner = new Spinner("%s Inicia sesión en eBay para continuar...");
+    this.spinner = new Spinner(
+      "%s Iniciando sesión en eBay, por favor espere..."
+    );
     this.spinner.setSpinnerString("⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏");
   }
 
-  async obtenerAuthCode(): Promise<string> {
-    // Certificado y clave privada para entorno de desarrollo
-    const key = fs.readFileSync(__dirname + "/../../../certs/key.pem");
-    const cert = fs.readFileSync(__dirname + "/../../../certs/cert.pem");
+  // Método para iniciar sesión
+  private async iniciarSesion(
+    url: string,
+    usuario: string,
+    contrasena: string
+  ): Promise<string> {
+    // {ignoreHTTPSErrors: true} es necesario para que no muestre un error
+    const navegador = await puppeteer.launch();
 
-    const app = express();
+    const pagina = await navegador.newPage();
 
-    const server = https.createServer({ key: key, cert: cert }, app);
+    await pagina.goto(url);
 
-    let resolve: any;
+    // Selecciona el input del usuario y lo rellena
+    await pagina.focus("#userid");
+    await pagina.keyboard.type(usuario);
 
-    const p = new Promise<string>((_resolve) => {
-      resolve = _resolve;
+    // Clicka el botón de continuar
+    await pagina.keyboard.press("Enter");
+
+    // Espera a que se cargue la página
+    await pagina.waitForResponse((response) => {
+      return response.url().includes("/signin/srv/identifer");
     });
 
-    app.get("/oauth", (req, res) => {
-      resolve(req.query.code);
+    // Comprueba si el usuario existe
+    const errorUsuario = await pagina.$("#signin-error-msg");
 
-      res.send(
-        "Se ha obtenido el código de autorización, ya puedes cerrar esta ventana."
-      );
+    if (errorUsuario) {
+      await navegador.close();
+      throw new Error("El usuario introducido no existe");
+    }
+
+    // Selecciona el input de la contraseña y lo rellena
+    await pagina.focus("#pass");
+    await pagina.keyboard.type(contrasena);
+
+    // Clicka el botón de iniciar sesión
+    await pagina.keyboard.press("Enter");
+
+    // Espera a que se cargue la página
+    await pagina.waitForNavigation();
+
+    // Comprueba si la contraseña introducida es correcta
+    const errorContrasena = await pagina.$("#signin-error-msg");
+
+    if (errorContrasena) {
+      await navegador.close();
+      throw new Error("La contraseña introducida es incorrecta");
+    }
+
+    // Comprueba si estamos en la pagina de consentimiento
+    const consentimiento = await pagina.$("form[action='consentSubmit']");
+
+    if (consentimiento) {
+      // Hace click sobre el botón de enviar
+      await pagina.click("input[type='submit']");
+      await pagina.waitForNavigation();
+    }
+
+    const code = await pagina.evaluate(() => {
+      const url = new URL(window.location.href);
+      return url.searchParams.get("code");
     });
+    await navegador.close();
 
-    server.listen(3000);
+    return code ? code : "";
+  }
 
-    // Genera la URL de inicio de sesión
-    const url = this.eBay.getInstancia().OAuth2.generateAuthUrl();
-    // Abre la URL en una nueva pestaña del navegador
-    console.log(`\nURL inicio de sesión: ${url}\n`);
-    require("openurl").open(url);
-
+  public obtenerAuthCode(usuario: string, contrasena: string): Promise<string> {
     // Inicia el spinner de inicio de sesión
     this.spinner.start();
-
-    const code = await p;
-
-    server.close();
-
-    return code;
+    // Genera la URL de inicio de sesión
+    const url = this.eBay.getInstancia().OAuth2.generateAuthUrl();
+    return this.iniciarSesion(url, usuario, contrasena);
   }
 
   finalizar(token: Token) {

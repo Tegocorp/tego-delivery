@@ -41,17 +41,17 @@ export default class Ebay {
   }
 
   // Método para obtener la instancia
-  getInstancia(): eBayApi {
+  public getInstancia(): eBayApi {
     return this.instancia;
   }
 
   // Comprueba si existe el fichero token
-  existeToken() {
+  public static existeToken() {
     return fs.existsSync(__dirname + "/../../token.json");
   }
 
-  establecerCredenciales() {
-    if (!this.existeToken()) {
+  public establecerCredenciales() {
+    if (!Ebay.existeToken()) {
       // Si no existe, se ejecuta el proceso de inicio de sesión
       login.ejecutar();
 

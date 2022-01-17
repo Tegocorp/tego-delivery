@@ -3,7 +3,6 @@ package-lock.json
 
 # General
 token.json
-certs
 
 # Logs
 logs
