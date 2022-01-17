@@ -89,6 +89,7 @@ export default class Oauth {
 
     await navegador.close();
 
+    // Obtener query param "code" de la URL
     return redirectUrl.searchParams.get("code");
   }
 
