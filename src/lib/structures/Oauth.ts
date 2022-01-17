@@ -6,7 +6,7 @@ import Ebay from "./Ebay";
 
 export default class Oauth {
   private eBay: Ebay;
-  private spinner: Spinner;
+  public spinner: Spinner;
 
   constructor(eBay: Ebay) {
     this.eBay = eBay;
