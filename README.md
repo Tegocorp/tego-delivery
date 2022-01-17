@@ -1,3 +1,3 @@
-# nity-delivery
+# tego-delivery
 
-Aplicación para la entrega de productos NityShop
+CLI tool to auto ship digital products on eBay
