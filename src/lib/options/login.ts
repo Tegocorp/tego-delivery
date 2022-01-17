@@ -26,14 +26,13 @@ const ejecutar = async () => {
       message: "Introduce la contraseña de eBay",
     },
   ]);
+  // Genera una nueva instancia de eBay
+  const eBay = new Ebay(usuario);
+
+  // Crea una nueva instancia de Oauth
+  const oAuth = new Oauth(eBay);
 
   try {
-    // Genera una nueva instancia de eBay
-    const eBay = new Ebay(usuario);
-
-    // Crea una nueva instancia de Oauth
-    const oAuth = new Oauth(eBay);
-
     const code = await oAuth.obtenerAuthCode(usuario, contrasena);
     const token = await eBay.getInstancia().OAuth2.getToken(code);
 
@@ -43,8 +42,8 @@ const ejecutar = async () => {
     // Vuelve a mostrar la lista de opciones
     list.ejecutar();
   } catch (error) {
-    console.clear();
     handleError(error);
+    oAuth.spinner.stop();
 
     await new Promise((resolve) => {
       setTimeout(() => {
