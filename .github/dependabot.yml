@@ -18,12 +18,6 @@ updates:
     interval: daily
     time: '00:00'
   open-pull-requests-limit: 10
-  reviewers:
-    - gnugomez
-    - kfuee
-  assignees:
-    - gnugomez
-    - kfuee
   commit-message:
     prefix: fix
     prefix-development: chore
